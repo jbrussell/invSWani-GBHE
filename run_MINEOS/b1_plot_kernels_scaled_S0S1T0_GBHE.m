@@ -14,22 +14,26 @@ fid = fopen('mode.txt','w');
 fprintf(fid,'%.0f %.0f %.0f',SONLY_vec,TONLY_vec,branch_vec);
 fclose(fid);
 
+vpv_cutoff = 7800; %8000; [km/s] cut kernels where velocities lower than this value
+
 parameter_FRECHET
+delete('mode.txt');
 
 FRECHETPATH = param.frechetpath;
 DATAmat_path = param.DATAmat_path;
 Gmat_S0path = param.Gmat_S0path;
 Gmat_S1path = param.Gmat_S1path;
 Gmat_T0path = param.Gmat_T0path;
-S0periods = flip(param.S0periods);
-S1periods = flip(param.S1periods);
-T0periods = flip(param.T0periods);
+S0periods = param.S0periods;
+S1periods = param.S1periods;
+T0periods = param.T0periods;
+T1periods = param.T1periods;
 modelpath = param.modelpath;
 % periods = param.periods;
 figpath = param.figpath;
 
-ylims = [0 100]; %[11 300];
-ylims_shall = [11 24];
+ylims = [10 300]; %[11 300];
+ylims_shall = [10 300];
 
 model_depth = 400;
 
@@ -38,6 +42,13 @@ model_depth = 400;
 T0_Gmat = load(Gmat_T0path);
 S0_Gmat = load(Gmat_S0path);
 S1_Gmat = load(Gmat_S1path);
+if ~isempty(T1periods)
+    isT1 = 1;
+    Gmat_T1path = param.Gmat_T1path;
+    T1_Gmat = load(Gmat_T1path);
+else
+    isT1 = 0;
+end
 
 %% Load Velocity Model
 Velmodel = load(modelpath);
@@ -45,7 +56,6 @@ Velmodel = load(modelpath);
 %qeqeqe = 5; % no invert water;
 %qeqeqe = 7; %no invert water + sediments; %7%5% no inverst for water
 % qeqeqe = 12; %10; %12; %13 % no invert for water + sediments + crust;
-vpv_cutoff = 8000;
 I = find(Velmodel.card.vpv > vpv_cutoff);
 qeqeqe = length(Velmodel.card.vpv)-I(end);
 
@@ -71,24 +81,33 @@ mode = 0;
 % Load phase and group velocities
 qfile = [FRECHETPATH,qname_S];
 [phV,grV,phVq] = readMINEOS_qfile2(qfile,S0periods,mode);
-c_S0 = flip(phV);
-U_S0 = flip(grV);
+c_S0 = phV;
+U_S0 = grV;
 
 %S1
 mode = 1;
 % Load phase and group velocities
 qfile = [FRECHETPATH,qname_S];
 [phV,grV,phVq] = readMINEOS_qfile2(qfile,S1periods,mode);
-c_S1 = flip(phV);
-U_S1 = flip(grV);
+c_S1 = phV;
+U_S1 = grV;
 
 %T0
 mode = 0;
 % Load phase and group velocities
 qfile = [FRECHETPATH,qname_T];
 [phV,grV,phVq] = readMINEOS_qfile2(qfile,T0periods,mode);
-c_T0 = flip(phV);
-U_T0 = flip(grV);
+c_T0 = phV;
+U_T0 = grV;
+
+%T1
+mode = 1;
+% Load phase and group velocities
+qfile = [FRECHETPATH,qname_T];
+[phV,grV,phVq] = readMINEOS_qfile2(qfile,T1periods,mode);
+c_T1 = phV;
+U_T1 = grV;
+
 
 %% set up kernels
 
@@ -102,6 +121,9 @@ z = (S0_Gmat.Gmatrix.rad(1)-S0_Gmat.Gmatrix.rad(Idep))/1000;
 GGG2_R0 = S0_Gmat.Gmatrix.L(:,Idep).*(c_S0'./U_S0'.*rho'.*Vsv'.^2);
 GGG2_R1 = S1_Gmat.Gmatrix.L(:,Idep).*(c_S1'./U_S1'.*rho'.*Vsv'.^2);
 GGG2_L = -T0_Gmat.Gmatrix.L(:,Idep).*(c_T0'./U_T0'.*rho'.*Vsv'.^2);
+if isT1
+    GGG2_L1 = -T1_Gmat.Gmatrix.L(:,Idep).*(c_T1'./U_T1'.*rho'.*Vsv'.^2);
+end
 
 % B (A) Rayleigh
 BBB2_R0 = S0_Gmat.Gmatrix.A(:,Idep).*(c_S0'./U_S0'.*rho'.*Vph'.^2);
@@ -111,8 +133,13 @@ BBB2_R1 = S1_Gmat.Gmatrix.A(:,Idep).*(c_S1'./U_S1'.*rho'.*Vph'.^2);
 % C (A) Rayleigh, (-N) Love
 CCC4 = [%S_Gmat.Gmatrix.A(:,IdepC);
     -T0_Gmat.Gmatrix.N(:,Idep)].*(c_T0'./U_T0'.*rho'.*Vsh'.^2);
+if isT1
+    CCC4_L1 = [%S_Gmat.Gmatrix.A(:,IdepC);
+    -T1_Gmat.Gmatrix.N(:,Idep)].*(c_T1'./U_T1'.*rho'.*Vsh'.^2);
+end
 
 
+% %%
 %% Plot Kernels
 clr = [1 0 0; 0 1 0; 0 0 1; 0.5 0.5 0.5];
 clr = lines(5);
@@ -141,7 +168,7 @@ legend(h,{'S0 K''_L (2\theta)','S0 K''_A (2\theta)','S0 K''_F (2\theta)'},'locat
 
 ylabel('Depth (km)','fontsize',LBLFNT);
 title('15-150 s');
-ylim([11 300]);
+ylim([ylims]);
 %         xlim([1e-16 1e-11]);
 set(gca,'fontsize',LBLFNT,'linewidth',1.5,'ydir','reverse')
 % xlim([0 5])
@@ -170,12 +197,18 @@ h3 = plot(S1_Gmat.Gmatrix.F(:,Idep).*(c_S1(:)./U_S1(:).*rho'.*eta'.*(Vph'.^2 - 2
 h4 = plot(T0_Gmat.Gmatrix.L(:,Idep).*(c_T0(:)./U_T0(:).*rho'.*Vsv'.^2),z,'--','linewidth',3,'color',clr(4,:)); hold on;
 % N
 h5 = plot(T0_Gmat.Gmatrix.N(:,Idep).*(c_T0(:)./U_T0(:).*rho'.*Vsh'.^2),z,'--','linewidth',3,'color',clr(5,:)); hold on;
+if isT1
+    % L
+    h6 = plot(T1_Gmat.Gmatrix.L(:,Idep).*(c_T1(:)./U_T1(:).*rho'.*Vsv'.^2),z,'-.','linewidth',3,'color',clr(4,:)); hold on;
+    % N
+    h7 = plot(T1_Gmat.Gmatrix.N(:,Idep).*(c_T1(:)./U_T1(:).*rho'.*Vsh'.^2),z,'-.','linewidth',3,'color',clr(5,:)); hold on;
+end
 
-h = [h1(1), h2(1), h3(1), h4(1), h5(1)];
+h = [h1(1), h2(1), h3(1), h4(1), h5(1) h6(1) h7(1)];
 set(gca,'box','on','LineWidth', 2,'xminortick','on','yminortick','on','fontsize', LBLFNT);
 legend(h,{'S1 K''_L (2\theta)','S1 K''_A (2\theta)','S1 K''_F (2\theta)','T0 K''_L (2\theta)','T0 K''_N (4\theta)'},'location','southeast','fontsize',15,'box','off');
 % ylabel('Depth (km)','fontsize',15);
-ylim([11 40]);
+ylim([ylims_shall]);
 title('5-7.5 s');
 %         xlim([1e-16 1e-11]);
 ylabel('Depth (km)','fontsize',LBLFNT);

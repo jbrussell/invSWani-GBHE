@@ -9,6 +9,14 @@ addpath(functionspath);
 path2runMINEOS = './'; % Path to this folder
 path2BIN = '../FORTRAN/bin'; % Path to fortran binaries
 
+% Data for azimuthal anisotropy inversion
+% param.DATAmat_path = ['./DATA/azi_measurements_RL_5_150s.mat'];
+% param.DATAmat_path = ['./DATA/azi_measurements_RL_5_150s_test.mat']; % jbr 12/19
+% param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s.mat'];
+% param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s_loveT1.mat'];
+% param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s_oldAmbS0.mat'];
+param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s_oldAmbS0_loveT1.mat'];
+
 % Mineos table parameters
 maxN = 400000; % Estimate of max number of modes
 minF = 0;
@@ -16,11 +24,12 @@ maxF = 200.05; % max frequency in mHz; %10.1; %250.05; %333.4; %500.05; %200.05;
 minL = 0;
 maxL = 50000;
 N_modes = 2; % <0 uses all mode branches, 1=fundamental only -------- JOSH 8/22/15
-param.CARDID = 'Nomelt_taper_eta_crust_INVpconstr_xi1.06_GRL19'; %'Nomelt_taper_eta_crust_INV_noQ'; %'Nomelt_taper_aniso_constxicrman_etaPREM_constxilays_layer2_5_150s_goodkerns3';
+% param.CARDID = 'Nomelt_taper_eta_crust_INVpconstr_xi1.06_GRL19'; %'Nomelt_taper_eta_crust_INV_noQ'; %'Nomelt_taper_aniso_constxicrman_etaPREM_constxilays_layer2_5_150s_goodkerns3';
+param.CARDID = 'Nomelt_taper_eta_crust_INVpconstr_xi1.06_GRL19_ORCAiso_INV';
 
 % (1 => yes, 0 => no)
-SONLY = 1; %Spheroidal modes? (RAYLEIGH)
-TONLY = 0; %Toroidal modes? (LOVE)
+SONLY = 0; %Spheroidal modes? (RAYLEIGH)
+TONLY = 1; %Toroidal modes? (LOVE)
 branch = 0;
 
 % % for plotting kernels
@@ -139,13 +148,13 @@ end
 % snr_tol = 0; % 5
 % r_tol = 200; %200; % 100 km
 % err_tol = 100; %0.7; %100;
-param.DATAmat_path = ['./DATA/azi_measurements_RL_5_150s.mat'];
 
 % Load periods
 load(param.DATAmat_path);
-param.S0periods = flip(data.rayl.periods(data.rayl.mode_br == 0));
-param.S1periods = flip(data.rayl.periods(data.rayl.mode_br == 1));
-param.T0periods = flip(data.love.periods(data.love.mode_br == 0));
+param.S0periods = data.rayl.periods_ani(data.rayl.mode_br_ani == 0);
+param.S1periods = data.rayl.periods_ani(data.rayl.mode_br_ani == 1);
+param.T0periods = data.love.periods_ani(data.love.mode_br_ani == 0);
+param.T1periods = data.love.periods_ani(data.love.mode_br_ani == 1);
 
 %% Load G matrix
 % Sbranch = 1; % Branch Number
@@ -156,7 +165,9 @@ param.Gmat_S1path = [param.frechetpath,'Gmatrix_S1_',num2str(param.S1periods(1))
 
 % Toroidal
 param.Gmat_T0path = [param.frechetpath,'Gmatrix_T0_',num2str(param.T0periods(1)),'_',num2str(param.T0periods(end)),'s_',param.CARDID,'.mat'];
-
+if ~isempty(param.T1periods)
+    param.Gmat_T1path = [param.frechetpath,'Gmatrix_T1_',num2str(param.T1periods(1)),'_',num2str(param.T1periods(end)),'s_',param.CARDID,'.mat'];
+end
 %% Figure path
 param.figdirpath = ['./figs/'];
 if ~exist(param.figdirpath) 
@@ -170,11 +181,17 @@ end
 %% Setup mode branches
 if param.TYPE == 'S' && branch == 0
     param.periods = param.S0periods;
+%     param.periods = [15 20 25 35 50 80 100 150];
     param.Gmat_Spath = param.Gmat_S0path;
 elseif param.TYPE == 'S' && branch == 1
     param.periods = param.S1periods;
+%     param.periods = [5 6 8 10];
 elseif param.TYPE == 'T' && branch == 0
     param.periods = param.T0periods;
+%     param.periods = [5 6];
+elseif param.TYPE == 'T' && branch == 1 && ~isempty(param.T1periods)
+    param.periods = param.T1periods;
+%     param.periods = [7];
 else
     error('no measurements for this branch!')
 end

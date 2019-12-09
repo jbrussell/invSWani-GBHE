@@ -24,11 +24,14 @@
 % (Should have all files for all desired mode and branches in the ./MODE/TABLES/CARDID)
 %
 clear
+%plot native
+SONLY_vec = [1 1 0 0]; %1 spheroidal (0 toroidal)
+TONLY_vec = [0 0 1 1]; %1 Toroidal (0 spheroidal)
+branch_vec = [0 1 0 1]; %0 fundamental, 1 first overtone
 
-SONLY_vec = [1 1 0]; %1 spheroidal (0 toroidal)
-TONLY_vec = [0 0 1]; %1 Toroidal (0 spheroidal)
-branch_vec = [0 1 0]; %0 fundamental, 1 first overtone
-
+% SONLY_vec = [1 1 0]; %1 spheroidal (0 toroidal)
+% TONLY_vec = [0 0 1]; %1 Toroidal (0 spheroidal)
+% branch_vec = [0 1 0]; %0 fundamental, 1 first overtone
 for imode = 1:length(SONLY_vec)
     clear h lgd Gmatrix
     SONLY = SONLY_vec(imode);
@@ -295,7 +298,7 @@ for imode = 1:length(SONLY_vec)
     %print('-painters','-dpdf','-r400',[EIGPATH,CARDID,'.',TYPEID,'.',num2str(j),'mod.',num2str(N_modes),'_fix.pdf']);
     save2pdf([FRECHETPATH,'ACFLNkernels_',TYPE,'_',num2str(periods(1)),'_',num2str(periods(end)),'_',num2str(ylims(2)),'km.',num2str(branch),'.pdf'],fig1,1000);
 
-    if  exist(['run_plotwk.',lower(TYPE)])
+    if exist(['run_plotwk.',lower(TYPE)])
         delete(['run_plotwk.',lower(TYPE)])
     end
     delete(['run_frechcv.',lower(TYPE)],['run_frechet.',lower(TYPE)],['run_frechcv_asc.',lower(TYPE)]);
@@ -307,9 +310,9 @@ for imode = 1:length(SONLY_vec)
 
     % Copy *.q file to FRECH directory
     QPATH = [param.TABLEPATH,CARDID,'/tables/',CARDID,'.',TYPEID,'.q'];
-    if ~exist([FRECHETPATH,CARDID,'.',TYPEID,'.q'])
-        system(['cp ',QPATH,' ',FRECHETPATH ])
-    end
+%     if ~exist([FRECHETPATH,CARDID,'.',TYPEID,'.q'])
+    system(['cp ',QPATH,' ',FRECHETPATH ])
+%     end
     
     % Delete large frechet files
     delete([FRECHETPATH,CARDID,'.',TYPEID,'.fcv.',num2str(branch)])
