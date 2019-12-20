@@ -10,11 +10,13 @@ close all;
 global data_fds kernels_fds 
 %%
 %%%%%%% INVERSION PARAMETERS %%%%%%%
+% Define model depth
 par.model_depth_G = 400;
 par.model_depth_B = par.model_depth_G;
 par.model_depth_H = par.model_depth_B;
 par.model_depth_E = 25; %25;
 
+% Ignore crust...
 par.Vpv_cutoff = 7800; % 4000 (crust) [km/s] cut kernels where velocities lower than this value
 
 % smoothing (second derivative)
@@ -44,7 +46,7 @@ par.eps_d = 1e0; % data weighting
 par.eps_f = 1e0; % constraint weighting
 
 % Break into layers
-par.is_brk = 0;
+par.is_brk = 0; % Break model into layers?
 par.z_brks = [25 100 300]; % [km] depths to form breaks
 par.alphF_brk = 2e2; %first derivative smoothing
 par.alphJ_brk = 2e2; %second derivative smoothing
@@ -53,16 +55,17 @@ par.alphJ_brk = 2e2; %second derivative smoothing
 % Bootstrap parameters
 par.nbs = 1; %1000 % Number of bootstrap iterations
 par.nbins = 60; % for heat plots
-par.chi2red_thresh = 1.5;
+par.chi2red_thresh = 1.5; % chi2 threshold; will only consider models with chi2 less than this value when determining confidence intervals
 
-isfig = 0;
-is_RMS = 0;
-issavemat = 0;
+isfig = 0; % save figures?
+is_RMS = 0; % Use RMS uncertainties for anisotropy strength measurements rather than proper 95 confidence?
+issavemat = 0; % Save results .mat file?
 
 ylims = [0 300];
 par.APM = 114; % absolute plate motion (GSRM 2.1; NNR) https://www.unavco.org/software/geodetic-utilities/plate-motion-calculator/plate-motion-calculator.html
 par.FSD = 75; % fossil spreading direction
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load General Parameters
 % parameter_ACFLN
 parameter_FRECHET
@@ -71,31 +74,6 @@ modelpath = param.modelpath;
 if par.nbs==1
     par.chi2red_thresh = 9999;
 end
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% FOR TESTING! DELETE
-%index data
-min_GSDF_per = 0; %30;
-max_GSDF_per = 999; %90;
-min_S0noise_per = 0; %20;
-max_Tnoise_per = 7; %20;
-flds = fields(data.rayl);
-I_mask = (data.rayl.periods_ani<min_GSDF_per) & (data.rayl.isAmbNoise_ani==0);
-for ifld = 1:length(flds)
-    data.rayl.(flds{ifld}) = data.rayl.(flds{ifld})(~I_mask);
-end
-I_mask = (data.rayl.periods_ani>max_GSDF_per) & (data.rayl.isAmbNoise_ani==0);
-for ifld = 1:length(flds)
-    data.rayl.(flds{ifld}) = data.rayl.(flds{ifld})(~I_mask);
-end
-I_mask = (data.rayl.periods_ani<min_S0noise_per) & (data.rayl.isAmbNoise_ani==1) & (data.rayl.mode_br_ani==0);
-for ifld = 1:length(flds)
-    data.rayl.(flds{ifld}) = data.rayl.(flds{ifld})(~I_mask);
-end
-I_mask = (data.love.periods_ani>max_Tnoise_per);
-for ifld = 1:length(flds)
-    data.love.(flds{ifld}) = data.love.(flds{ifld})(~I_mask);
-end
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Initialize model structure
 Velmodel = load(modelpath);
