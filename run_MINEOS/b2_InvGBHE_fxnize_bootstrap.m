@@ -214,7 +214,7 @@ title('G/L','fontsize',18);
 ylim([12 300]);
 xlim([50 200]);
 caxis([0 max_cbar]);
-plot([ 78 78],[0 250],'--','color',[0.8 0.8 0.8],'Linewidth',3);
+plot([ par.FSD par.FSD],[0 250],'--','color',[0.8 0.8 0.8],'Linewidth',3);
 APM = 296.74;
 plot([ APM-180 APM-180 ],[0 400],'--','color',[1 1 1], 'Linewidth',3);
 set(gca,'YDir','reverse')
@@ -249,7 +249,7 @@ caxis([0 max_cbar]);
 % ylim([12 40]);
 ylim([12 300]);
 xlim([50 150]);
-plot([ 78 78],[0 250],'--','color',[0.8 0.8 0.8],'Linewidth',3);
+plot([ par.FSD par.FSD],[0 250],'--','color',[0.8 0.8 0.8],'Linewidth',3);
 APM = 296.74;
 plot([ APM-180 APM-180 ],[0 400],'--','color',[1 1 1], 'Linewidth',3);
 set(gca,'YDir','reverse')
@@ -309,7 +309,7 @@ plot(ensemble.E.E_dir(:,ensemble.I_good_X2red4),model.E.z,'-','color',clr_E_bs,'
 h1(1) = plot(stats.G.G_dir_med,model.G.z,'-','color',clr_G,'linewidth',4);hold on;
 h1(4) = plot(stats.E.E_dir_med,model.E.z,'-','color',clr_E,'linewidth',4);hold on;
 % plot(stats.G.G_dir_bs(:,1),model.G.z,'-k','linewidth',2);
-plot([ 78 78],[0 250],'k--','Linewidth',3);
+plot([ par.FSD par.FSD],[0 250],'k--','Linewidth',3);
 plot([ par.APM par.APM ],[50 400],'--','color',[0.6 0.6 0.6], 'Linewidth',3);
 set(gca,'YDir','reverse')
 % xlim([20 200]);

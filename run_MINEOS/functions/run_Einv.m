@@ -99,6 +99,8 @@ function [m, model] = inv_E(data,model,kernels,csstr,par,ibs)
     % Data weights
     Wd = diag([1./data.love.(err_cs4)(I_L0)'; % L0
                1./data.love.(err_cs4)(I_L1)']).^2; % L1
+    % Downweight large weights 
+    Wd(Wd>2*std(diag(Wd))) = 2*std(diag(Wd));
            
    % Constraint equations
     h = [zeros(size(H0,1),1); % E Norm damping

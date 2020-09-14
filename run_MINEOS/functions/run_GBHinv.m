@@ -140,6 +140,8 @@ function [m, model] = inv_GBH(data,model,kernels,csstr,par,ibs)
                1./data.rayl.(err_cs2)(I_R1)'; % R1
                1./data.love.(err_cs2)(I_L0)'; % L0
                1./data.love.(err_cs2)(I_L1)']).^2; % L1
+    % Downweight large weights 
+    Wd(Wd>2*std(diag(Wd))) = 2*std(diag(Wd));
     
     % Constraint equations
     h = [zeros(nlayer_deepDAMP0,1); % G damping to zero below specified depth
