@@ -353,6 +353,7 @@ function [X00] = break_constraint(X00, z, z_brks)
             continue
         end
         [~,I_brk] = min(abs(z-z_brks(ibrk)));
+        I_brk = I_brk+1;
         if length(find(X00(3,:)~=0))==3 % second derivative
             X00(I_brk-1:I_brk+1,:) = 0;
         end
