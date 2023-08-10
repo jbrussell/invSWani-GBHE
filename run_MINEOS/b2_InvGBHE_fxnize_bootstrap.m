@@ -14,17 +14,17 @@ global data_fds kernels_fds
 par.model_depth_G = 400;
 par.model_depth_B = par.model_depth_G;
 par.model_depth_H = par.model_depth_B;
-par.model_depth_E = 25; %25;
+par.model_depth_E = 45; %25;
 
 % Ignore crust...
 par.Vpv_cutoff = 7800; % 4000 (crust) [km/s] cut kernels where velocities lower than this value
 
 % smoothing (second derivative)
-    par.alphF_GBH = 4e2; %9e2; 
+    par.alphF_GBH = 4e2 / 2; %9e2; 
     par.alphF_E = 6e2; %3e3; 
     
 % Flatness (first derivative);
-    par.alphJ_GBH = 1e1;
+    par.alphJ_GBH = 1e1 * 0;
     par.alphJ_E = 2e2; %2e3; 
     
 % Damp below certain depth
@@ -53,9 +53,9 @@ par.alphJ_brk = 2e2; %second derivative smoothing
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bootstrap parameters
-par.nbs = 1; %1000 % Number of bootstrap iterations
+par.nbs = 100; %1000 % Number of bootstrap iterations
 par.nbins = 60; % for heat plots
-par.chi2red_thresh = 1.5; % chi2 threshold; will only consider models with chi2 less than this value when determining confidence intervals
+par.chi2red_thresh = 5; %1.5; % chi2 threshold; will only consider models with chi2 less than this value when determining confidence intervals
 
 isfig = 0; % save figures?
 is_RMS = 0; % Use RMS uncertainties for anisotropy strength measurements rather than proper 95 confidence?
@@ -286,7 +286,7 @@ plot(ensemble.G.G_mag(:,ensemble.I_good_X2red2)*100,model.G.z,'-','color',clr_G_
 plot(ensemble.E.E_mag(:,ensemble.I_good_X2red4)*100,model.E.z,'-','color',clr_E_bs,'linewidth',2);hold on;
 h1(1) = plot(stats.G.G_mag_med*100,model.G.z,'-','color',clr_G,'linewidth',4);hold on;
 h1(4) = plot(stats.E.E_mag_med*100,model.E.z,'-','color',clr_E,'linewidth',4);hold on;
-xlim([0 6]); 
+xlim([0 8]); 
 ylim([0 300]);
 ylabel('Depth (km)','fontsize',18)
 xlabel('Strength (%)','fontsize',18)

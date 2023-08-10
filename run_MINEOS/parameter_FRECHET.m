@@ -10,12 +10,7 @@ path2runMINEOS = './'; % Path to this folder
 path2BIN = '../FORTRAN/bin'; % Path to fortran binaries
 
 % Data for azimuthal anisotropy inversion
-% param.DATAmat_path = ['./DATA/azi_measurements_RL_5_150s.mat'];
-% param.DATAmat_path = ['./DATA/azi_measurements_RL_5_150s_test.mat']; % jbr 12/19
-% param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s.mat'];
-% param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s_loveT1.mat'];
-% param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s_oldAmbS0.mat'];
-param.DATAmat_path = ['./DATA/data_AmbGSDFLoveRayl_AGU19_5_150s_oldAmbS0_loveT1.mat'];
+param.DATAmat_path = ['./DATA/example_dataset.mat'];
 
 % Mineos table parameters
 maxN = 400000; % Estimate of max number of modes
@@ -24,12 +19,11 @@ maxF = 200.05; % max frequency in mHz; %10.1; %250.05; %333.4; %500.05; %200.05;
 minL = 0;
 maxL = 50000;
 N_modes = 2; % <0 uses all mode branches, 1=fundamental only -------- JOSH 8/22/15
-% param.CARDID = 'Nomelt_taper_eta_crust_INVpconstr_xi1.06_GRL19'; %'Nomelt_taper_eta_crust_INV_noQ'; %'Nomelt_taper_aniso_constxicrman_etaPREM_constxilays_layer2_5_150s_goodkerns3';
-param.CARDID = 'Nomelt_taper_eta_crust_INVpconstr_xi1.06_GRL19_ORCAiso_INV';
+param.CARDID = 'Nomelt_taper_eta_crust_INVpconstr_xi1.06_GRL19';
 
 % (1 => yes, 0 => no)
-SONLY = 0; %Spheroidal modes? (RAYLEIGH)
-TONLY = 1; %Toroidal modes? (LOVE)
+SONLY = 1; %Spheroidal modes? (RAYLEIGH)
+TONLY = 0; %Toroidal modes? (LOVE)
 branch = 0;
 
 % % for plotting kernels
