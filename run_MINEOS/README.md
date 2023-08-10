@@ -13,4 +13,4 @@ a2_mk_ACFLNkernels_love_all.m -> loop through all Rayleigh and Love data and gen
 
 b1_plot_kernels_scaled_S0S1T0_GBHE.m -> plot the kernels with their proper scalings
 
-b2_InvGBHE_fxnize_bootstrap -> run bootstrap inversion of Rayleigh and Love anisotropy strength and direction for depth-dependent parameters G, B, H, and E strength and direction. The bootstrap procedure randomly perturbs each datapoint within its 1-sigma uncertainty bounds and is repeated par.nbs times.
+b2_InvGBHE_fxnize_bootstrap -> run bootstrap inversion of Rayleigh and Love anisotropy strength and direction for depth-dependent parameters G, B, H, and E strength and direction. The bootstrap procedure randomly perturbs each datapoint within its 1-sigma uncertainty bounds and is repeated par.nbs times. The data structure "stats" contains the 68 and 95 confidence intervals.
