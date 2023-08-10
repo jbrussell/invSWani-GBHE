@@ -1,4 +1,4 @@
-FBIN = /Users/russell/Lamont/PROJ_NoMelt_Cij/MINEOS_ACFLN/FORTRAN/bin
+FBIN = /Users/russell/Lamont/GITHUB/MINEOS_synthetics/FORTRAN/bin
 FC = gfortran
 FFLAGS=-ffixed-line-length-none 
 #-L/usr/local/include 

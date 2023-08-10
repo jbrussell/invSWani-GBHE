@@ -9,8 +9,8 @@
 #
 
 COMPILER="gfortran"
-LIBPATH="/Users/russell/Lamont/PROJ_NoMelt_Cij/MINEOS_ACFLN/FORTRAN/libgfortran"
-BINPATH="/Users/russell/Lamont/PROJ_NoMelt_Cij/MINEOS_ACFLN/FORTRAN/bin"
+LIBPATH="$PWD/libgfortran"
+BINPATH="$PWD/bin"
 
 echo "Compiler: $COMPILER"
 
@@ -45,6 +45,12 @@ sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${
 (cd ${MAKEPATH} && make -f ${MAKEFILE}.mk)
 rm -r ${MAKEPATH}/*.o
 
+MAKEFILE="3_frechet_Q"
+sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${LIBPATH}+" ${MAKEPATH}${MAKEFILE}.mkin > ${MAKEPATH}${MAKEFILE}.mk
+(cd ${MAKEPATH} && make clean -f ${MAKEFILE}.mk)
+(cd ${MAKEPATH} && make -f ${MAKEFILE}.mk)
+rm -r ${MAKEPATH}/*.o
+
 ###### mineos ########################
 echo "mineos"
 MAKEPATH="./MINEOS/prog_mineos/"
@@ -68,6 +74,18 @@ sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${
 rm -r ${MAKEPATH}/*.o
 
 MAKEFILE="4_mineos_table"
+sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${LIBPATH}+" ${MAKEPATH}${MAKEFILE}.mkin > ${MAKEPATH}${MAKEFILE}.mk
+(cd ${MAKEPATH} && make clean -f ${MAKEFILE}.mk)
+(cd ${MAKEPATH} && make -f ${MAKEFILE}.mk)
+rm -r ${MAKEPATH}/*.o
+
+MAKEFILE="5_get_eigfxn_grvelo"
+sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${LIBPATH}+" ${MAKEPATH}${MAKEFILE}.mkin > ${MAKEPATH}${MAKEFILE}.mk
+(cd ${MAKEPATH} && make clean -f ${MAKEFILE}.mk)
+(cd ${MAKEPATH} && make -f ${MAKEFILE}.mk)
+rm -r ${MAKEPATH}/*.o
+
+MAKEFILE="5_get_eigfxn_grvelo_int"
 sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${LIBPATH}+" ${MAKEPATH}${MAKEFILE}.mkin > ${MAKEPATH}${MAKEFILE}.mk
 (cd ${MAKEPATH} && make clean -f ${MAKEFILE}.mk)
 (cd ${MAKEPATH} && make -f ${MAKEFILE}.mk)
@@ -103,6 +121,12 @@ sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${
 rm -r ${MAKEPATH}/*.o
 
 MAKEFILE="2_idagrn6_sac_excite"
+sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${LIBPATH}+" ${MAKEPATH}${MAKEFILE}.mkin > ${MAKEPATH}${MAKEFILE}.mk
+(cd ${MAKEPATH} && make clean -f ${MAKEFILE}.mk)
+(cd ${MAKEPATH} && make -f ${MAKEFILE}.mk)
+rm -r ${MAKEPATH}/*.o
+
+MAKEFILE="3_idagrn6_excite"
 sed -e "s/FCxreplace/${COMPILER}/ ; s+BINxreplace+${BINPATH}+ ; s+LIBxreplace+${LIBPATH}+" ${MAKEPATH}${MAKEFILE}.mkin > ${MAKEPATH}${MAKEFILE}.mk
 (cd ${MAKEPATH} && make clean -f ${MAKEFILE}.mk)
 (cd ${MAKEPATH} && make -f ${MAKEFILE}.mk)
