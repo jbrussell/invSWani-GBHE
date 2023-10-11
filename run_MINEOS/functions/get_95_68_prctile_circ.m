@@ -26,17 +26,19 @@ x_u68 = (x_med + circ_std(th*x*pi/180)'* 180/pi /th);
 x_l68 = (x_med - circ_std(th*x*pi/180)'* 180/pi /th);
 
 % Make sure all angles are between -180 and 180
-x_med(x_med<0) = x_med(x_med<0) + 180;
-x_u95(x_u95<0) = x_u95(x_u95<0) + 180;
-x_l95(x_l95<0) = x_l95(x_l95<0) + 180;
-x_u68(x_u68<0) = x_u68(x_u68<0) + 180;
-x_l68(x_l68<0) = x_l68(x_l68<0) + 180;
+for ii = flip(1:5)
+    x_med(x_med<(ii-1)*180) = x_med(x_med<(ii-1)*180) + ii*180;
+    x_u95(x_u95<(ii-1)*180) = x_u95(x_u95<(ii-1)*180) + ii*180;
+    x_l95(x_l95<(ii-1)*180) = x_l95(x_l95<(ii-1)*180) + ii*180;
+    x_u68(x_u68<(ii-1)*180) = x_u68(x_u68<(ii-1)*180) + ii*180;
+    x_l68(x_l68<(ii-1)*180) = x_l68(x_l68<(ii-1)*180) + ii*180;
 
-x_med(x_med>180) = x_med(x_med>180) - 180;
-x_u95(x_u95>180) = x_u95(x_u95>180) - 180;
-x_l95(x_l95>180) = x_l95(x_l95>180) - 180;
-x_u68(x_u68>180) = x_u68(x_u68>180) - 180;
-x_l68(x_l68>180) = x_l68(x_l68>180) - 180;
+    x_med(x_med>ii*180) = x_med(x_med>ii*180) - ii*180;
+    x_u95(x_u95>ii*180) = x_u95(x_u95>ii*180) - ii*180;
+    x_l95(x_l95>ii*180) = x_l95(x_l95>ii*180) - ii*180;
+    x_u68(x_u68>ii*180) = x_u68(x_u68>ii*180) - ii*180;
+    x_l68(x_l68>ii*180) = x_l68(x_l68>ii*180) - ii*180;
+end
 
 
 end
